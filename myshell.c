@@ -36,8 +36,12 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
 
 #define MAX_ARGS	64
 #define MAX_ARG_LEN	16
@@ -61,17 +65,17 @@ int main(int argc, char *argv[]) {
    char cmdLine[MAX_LINE_LEN];
    struct command_t command;
 
-   ...
+   //...
    /* Shell initialization */
-   ...
+   //...
 
-   while (TRUE) {
+   while (1) {
       printPrompt();
       /* Read the command line and parse it */
       readCommand(cmdLine);
-      ...
+      //...
       parseCommand(cmdLine, &command);
-      ...
+      //...
       command.argv[command.argc] = NULL;
 
       /* Create a child process to execute the command */
@@ -128,7 +132,7 @@ void printPrompt() {
    /* Build the prompt string to have the machine name,
     * current directory, or other desired information
     */
-   promptString = ...;
+   char* promptString = "====>";
    printf("%s ", promptString);
 }
 
@@ -138,7 +142,7 @@ void readCommand(char *buffer) {
     * the buffer. This implementation is greatly simplified,
     * but it does the job.
     */
-   gets(buffer);
+    fgets(buffer, MAX_LINE_LEN, stdin);   
 }
 
 /* End printPrompt and readCommand */
