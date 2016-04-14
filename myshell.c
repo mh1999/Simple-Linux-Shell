@@ -132,7 +132,7 @@ void printPrompt() {
    /* Build the prompt string to have the machine name,
     * current directory, or other desired information
     */
-   char* promptString = "====>";
+   char* promptString = "linux(maw120)|>";
    printf("%s ", promptString);
 }
 
@@ -143,6 +143,9 @@ void readCommand(char *buffer) {
     * but it does the job.
     */
     fgets(buffer, MAX_LINE_LEN, stdin);   
+    
+    if(*buffer == '\n')
+      return;
 }
 
 /* End printPrompt and readCommand */

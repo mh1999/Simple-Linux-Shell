@@ -7,7 +7,7 @@ myshell:	myshell.o
 myshell.o:	myshell.c
 	gcc -c myshell.c
 
-run:
+run:	myshell
 	@./myshell
 
 clean:
