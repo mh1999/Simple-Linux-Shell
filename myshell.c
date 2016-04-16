@@ -58,13 +58,14 @@ struct command_t {
 int parseCommand(char *, struct command_t *);
 void printPrompt();
 void readCommand(char *);
+void convertCommand(char *);
 
 int main(int argc, char *argv[]) {
    int pid;
    int status;
    char cmdLine[MAX_LINE_LEN];
    struct command_t command;
-
+   
    //...
    /* Shell initialization */
    //...
@@ -77,11 +78,12 @@ int main(int argc, char *argv[]) {
       parseCommand(cmdLine, &command);
       //...
       command.argv[command.argc] = NULL;
-
+      //...
+      convertCommand(command.name);
       /* Create a child process to execute the command */
       if ((pid = fork()) == 0) {
          /* Child executing command */
-         execvp(command.name, command.argv);
+         execvp("command.name", command.argv);
       }
       /* Wait for the child to terminate */
       wait(&status);
@@ -147,5 +149,64 @@ void readCommand(char *buffer) {
     if(*buffer == '\n')
       return;
 }
-
 /* End printPrompt and readCommand */
+
+void convertCommand(char* commandName) {
+  if (strcmp(commandName,"C") == 0) {
+    free(commandName);
+    commandName = (char *) malloc(sizeof("cp"));
+    strcpy(commandName, "cp");
+  }
+  else if (strcmp(commandName,"D") == 0) {
+    free(commandName);
+    commandName = (char *) malloc(sizeof("rm"));
+    strcpy(commandName, "rm");
+  }
+  else if (strcmp(commandName,"E") == 0) {
+    free(commandName);
+    commandName = (char *) malloc(sizeof("echo"));
+    strcpy(commandName, "echo");
+  }
+  else if (strcmp(commandName,"H") == 0) {
+    free(commandName);
+    commandName = (char *) malloc(sizeof(""));
+    strcpy(commandName, "");
+  }
+  else if (strcmp(commandName,"L") == 0) {
+    free(commandName);
+    commandName = (char *) malloc(sizeof("ls"));
+    strcpy(commandName, "ls");
+  }
+  else if (strcmp(commandName,"M") == 0) {
+    free(commandName);
+    commandName = (char *) malloc(sizeof("nano"));
+    strcpy(commandName, "nano");
+  }
+  else if (strcmp(commandName,"P") == 0) {
+    free(commandName);
+    commandName = (char *) malloc(sizeof("more"));
+    strcpy(commandName, "more");
+  }
+  else if (strcmp(commandName,"Q") == 0) {
+    exit(1);
+  }
+  else if (strcmp(commandName,"S") == 0) {
+    free(commandName);
+    commandName = (char *) malloc(sizeof(""));
+    strcpy(commandName, "");
+  }
+  else if (strcmp(commandName,"W") == 0) {
+    free(commandName);
+    commandName = (char *) malloc(sizeof("clear"));
+    strcpy(commandName, "clear");
+  }
+  else if (strcmp(commandName,"X") == 0) {
+    free(commandName);
+    commandName = (char *) malloc(sizeof(""));
+    strcpy(commandName, "");
+  }
+
+
+  return;
+
+}
