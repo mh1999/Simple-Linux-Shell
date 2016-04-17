@@ -58,7 +58,7 @@ struct command_t {
 int parseCommand(char *, struct command_t *);
 void printPrompt();
 void readCommand(char *);
-void convertCommand(char *);
+void convertCommand(struct command_t *);
 
 int main(int argc, char *argv[]) {
    int pid;
@@ -79,10 +79,18 @@ int main(int argc, char *argv[]) {
       //...
       command.argv[command.argc] = NULL;
       //...
-      convertCommand(command.name);
+      convertCommand(&command);
       /* Create a child process to execute the command */
       if ((pid = fork()) == 0) {
-         /* Child executing command */
+	// if the current command it blank, exit the child process
+	if(strcmp(command.name,"") == 0) {
+	  return 0;
+        }
+	// Disable firefox& command until I can fix it
+	else if (strcmp(command.name,"firefox&")) {
+	  return 0;
+	}
+	/* Child executing command */
          execvp(command.name, command.argv);
       }
       /* Wait for the child to terminate */
@@ -151,59 +159,59 @@ void readCommand(char *buffer) {
 }
 /* End printPrompt and readCommand */
 
-void convertCommand(char* commandName) {
-  if (strcmp(commandName,"C") == 0) {
-    free(commandName);
-    commandName = (char *) malloc(sizeof("cp"));
-    strcpy(commandName, "cp");
+void convertCommand(struct command_t* command) {
+  if (strcmp(command->name,"C") == 0) {
+    free(command->name);
+    command->name = (char *) malloc(sizeof("cp"));
+    strcpy(command->name, "cp");
   }
-  else if (strcmp(commandName,"D") == 0) {
-    free(commandName);
-    commandName = (char *) malloc(sizeof("rm"));
-    strcpy(commandName, "rm");
+  else if (strcmp(command->name,"D") == 0) {
+    free(command->name);
+    command->name = (char *) malloc(sizeof("rm"));
+    strcpy(command->name, "rm");
   }
-  else if (strcmp(commandName,"E") == 0) {
-    free(commandName);
-    commandName = (char *) malloc(sizeof("echo"));
-    strcpy(commandName, "echo");
+  else if (strcmp(command->name,"E") == 0) {
+    free(command->name);
+    command->name = (char *) malloc(sizeof("echo"));
+    strcpy(command->name, "echo");
   }
-  else if (strcmp(commandName,"H") == 0) {
-    free(commandName);
-    commandName = (char *) malloc(sizeof(""));
-    strcpy(commandName, "");
+  else if (strcmp(command->name,"H") == 0) {
+    free(command->name);
+    command->name = (char *) malloc(sizeof(""));
+    strcpy(command->name, "");
   }
-  else if (strcmp(commandName,"L") == 0) {
-    free(commandName);
-    commandName = (char *) malloc(sizeof("ls"));
-    strcpy(commandName, "ls");
+  else if (strcmp(command->name,"L") == 0) {
+    free(command->name);
+    command->name = (char *) malloc(sizeof("ls"));
+    strcpy(command->name, "ls");
   }
-  else if (strcmp(commandName,"M") == 0) {
-    free(commandName);
-    commandName = (char *) malloc(sizeof("nano"));
-    strcpy(commandName, "nano");
+  else if (strcmp(command->name,"M") == 0) {
+    free(command->name);
+    command->name = (char *) malloc(sizeof("nano"));
+    strcpy(command->name, "nano");
   }
-  else if (strcmp(commandName,"P") == 0) {
-    free(commandName);
-    commandName = (char *) malloc(sizeof("more"));
-    strcpy(commandName, "more");
+  else if (strcmp(command->name,"P") == 0) {
+    free(command->name);
+    command->name = (char *) malloc(sizeof("more"));
+    strcpy(command->name, "more");
   }
-  else if (strcmp(commandName,"Q") == 0) {
+  else if (strcmp(command->name,"Q") == 0) {
     exit(1);
   }
-  else if (strcmp(commandName,"S") == 0) {
-    free(commandName);
-    commandName = (char *) malloc(sizeof(""));
-    strcpy(commandName, "");
+  else if (strcmp(command->name,"S") == 0) {
+    free(command->name);
+    command->name = (char *) malloc(sizeof("firefox&"));
+    strcpy(command->name, "firefox&");
   }
-  else if (strcmp(commandName,"W") == 0) {
-    free(commandName);
-    commandName = (char *) malloc(sizeof("clear"));
-    strcpy(commandName, "clear");
+  else if (strcmp(command->name,"W") == 0) {
+    free(command->name);
+    command->name = (char *) malloc(sizeof("clear"));
+    strcpy(command->name, "clear");
   }
-  else if (strcmp(commandName,"X") == 0) {
-    free(commandName);
-    commandName = (char *) malloc(sizeof(""));
-    strcpy(commandName, "");
+  else if (strcmp(command->name,"X") == 0) {
+    free(command->name);
+    command->name = (char *) malloc(sizeof(command->argv[1]));
+    strcpy(command->name, command->argv[1]);
   }
 
 
