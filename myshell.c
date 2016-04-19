@@ -65,6 +65,7 @@ int main(int argc, char *argv[]) {
    int status;
    char cmdLine[MAX_LINE_LEN];
    struct command_t command;
+   int bg = 0;
    int err;
 
    //...
@@ -78,11 +79,34 @@ int main(int argc, char *argv[]) {
       //...
       parseCommand(cmdLine, &command);
       //...
-      command.argv[command.argc] = NULL;
+      command.argv[command.argc+1] = NULL;
       //...
       convertCommand(&command);
-      /* Create a child process to execute the command */
+      	/* Create a child process to execute the command */
+        {
+          if (*(command.name + (strlen(command.name) - 1)) == '&') {
+            int size = strlen(command.name) - 1;
+            char* new_command;
+            new_command = (char *) malloc(size);
+            strncpy(new_command,command.name,size);
+            free(command.name);
+            command.name = new_command;
+            bg = 1;
+          }
+	  else
+	    bg = 0;
+        }
+
       if ((pid = fork()) == 0) {
+//        if (*(command.name + (strlen(command.name) - 1 )) == '&') {
+//	 *(command.name + (strlen(command.name) - 1 )) = '&';
+  //       bg = 1;
+    //    }
+
+//	if (command.name[strlen(command.name)] == '&') {
+//	  command.name[strlen(command.name)] = '\0';
+//	  bg = 1;
+//	}
 
 	// if the current command it blank, exit the child process
 	if(strcmp(command.name,"") == 0)
@@ -92,8 +116,14 @@ int main(int argc, char *argv[]) {
          err = execvp(command.name, command.argv);
          if (err = -1) { return 1; }
       }
+      
       /* Wait for the child to terminate */
-      wait(&status);
+      if (bg)
+        waitpid(pid, &status, WNOHANG);
+      else
+	waitpid(pid, &status, 0);
+
+
    }
 
    /* Shell termination */
@@ -199,8 +229,8 @@ void convertCommand(struct command_t* command) {
   }
   else if (strcmp(command->name,"S") == 0) {
     free(command->name);
-    command->name = (char *) malloc(sizeof(""));
-    strcpy(command->name, "");
+    command->name = (char *) malloc(sizeof("firefox&"));
+    strcpy(command->name, "firefox&");
   }
   else if (strcmp(command->name,"W") == 0) {
     free(command->name);
