@@ -59,6 +59,7 @@ int parseCommand(char *, struct command_t *);
 void printPrompt();
 void readCommand(char *);
 void convertCommand(struct command_t *);
+void displayHelp();
 
 int main(int argc, char *argv[]) {
    int pid;
@@ -99,16 +100,20 @@ int main(int argc, char *argv[]) {
         }
 
       if ((pid = fork()) == 0) {
+
         if(strcmp(command.name,"") == 0)
           return 0;
+
         else if (strcmp(command.name,"H") == 0) {
-          printf("Implement me!\n");
+          displayHelp();
 	  return 0;
         }
+
         else if (strcmp(command.name,"L") == 0) {
           if ((pid = fork()) == 0) {
 	    execl("/bin/pwd", "pwd", (char *) NULL);
           }
+
           waitpid(pid, &status, 0);
           printf("\n");
           execl("/bin/ls", "ls", "-l", (char *) NULL);
@@ -243,4 +248,33 @@ void convertCommand(struct command_t* command) {
 
   return;
 
+}
+
+void displayHelp() {
+
+  printf("\nUser Manual:\n\n");
+  printf("  C file1 file2\n");
+  printf("    - Create file 2 copy all bytes of file1 to file2 without deleting file1.\n");
+  printf("  D file\n");
+  printf("    - Delete file.\n");
+  printf("  E comment\n");
+  printf("    - Display comment on screen followed by a newline.\n");
+  printf("  H\n");
+  printf("    - Display the user manual.\n");
+  printf("  L\n");
+  printf("    - List the current directory.\n");
+  printf("  M file\n");
+  printf("    - Create file by launching a text editor.\n");
+  printf("  P file\n");
+  printf("    - Display content of file on screen.\n");
+  printf("  Q\n");
+  printf("    - Quit the shell.\n");
+  printf("  S\n");
+  printf("    - Launch firefox to surf the web.\n");
+  printf("  W\n");
+  printf("    - Clear the screen.\n");
+  printf("  X program");
+  printf("    - Execute program.\n\n");
+
+  return;
 }
