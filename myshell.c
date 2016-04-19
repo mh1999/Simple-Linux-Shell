@@ -19,7 +19,7 @@
 //
 //
 //
-// Signed:_____________________________________ Date:_____________
+// Signed:___________Michael Weyandt___________ Date:_____4/19/2016_____
 
 // 3460:426 Lab 4A - Basic C shell
 
@@ -82,15 +82,12 @@ int main(int argc, char *argv[]) {
       convertCommand(&command);
       /* Create a child process to execute the command */
       if ((pid = fork()) == 0) {
+
 	// if the current command it blank, exit the child process
-	if(strcmp(command.name,"") == 0) {
+	if(strcmp(command.name,"") == 0)
 	  return 0;
-        }
-	// Disable firefox& command until I can fix it
-	else if (strcmp(command.name,"firefox&")) {
-	  return 0;
-	}
-	/* Child executing command */
+	
+	 /* Child executing command */
          execvp(command.name, command.argv);
       }
       /* Wait for the child to terminate */
@@ -200,8 +197,8 @@ void convertCommand(struct command_t* command) {
   }
   else if (strcmp(command->name,"S") == 0) {
     free(command->name);
-    command->name = (char *) malloc(sizeof("firefox&"));
-    strcpy(command->name, "firefox&");
+    command->name = (char *) malloc(sizeof(""));
+    strcpy(command->name, "");
   }
   else if (strcmp(command->name,"W") == 0) {
     free(command->name);
