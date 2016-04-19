@@ -225,7 +225,7 @@ void convertCommand(struct command_t* command) {
     strcpy(command->name, "more");
   }
   else if (strcmp(command->name,"Q") == 0) {
-    exit(1);
+    exit(0);
   }
   else if (strcmp(command->name,"S") == 0) {
     free(command->name);
