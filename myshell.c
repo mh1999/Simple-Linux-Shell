@@ -65,6 +65,7 @@ int main(int argc, char *argv[]) {
    int status;
    char cmdLine[MAX_LINE_LEN];
    struct command_t command;
+   int err;
 
    //...
    /* Shell initialization */
@@ -88,7 +89,8 @@ int main(int argc, char *argv[]) {
 	  return 0;
 	
 	 /* Child executing command */
-         execvp(command.name, command.argv);
+         err = execvp(command.name, command.argv);
+         if (err = -1) { return 1; }
       }
       /* Wait for the child to terminate */
       wait(&status);
