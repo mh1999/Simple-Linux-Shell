@@ -62,6 +62,7 @@ void convertCommand(struct command_t *);
 
 int main(int argc, char *argv[]) {
    int pid;
+   int pid2;
    int status;
    char cmdLine[MAX_LINE_LEN];
    struct command_t command;
@@ -79,7 +80,7 @@ int main(int argc, char *argv[]) {
       //...
       parseCommand(cmdLine, &command);
       //...
-      command.argv[command.argc+1] = NULL;
+      command.argv[command.argc] = NULL;
       //...
       convertCommand(&command);
       	/* Create a child process to execute the command */
@@ -98,23 +99,27 @@ int main(int argc, char *argv[]) {
         }
 
       if ((pid = fork()) == 0) {
-//        if (*(command.name + (strlen(command.name) - 1 )) == '&') {
-//	 *(command.name + (strlen(command.name) - 1 )) = '&';
-  //       bg = 1;
-    //    }
-
-//	if (command.name[strlen(command.name)] == '&') {
-//	  command.name[strlen(command.name)] = '\0';
-//	  bg = 1;
-//	}
-
-	// if the current command it blank, exit the child process
-	if(strcmp(command.name,"") == 0)
+        if(strcmp(command.name,"") == 0)
+          return 0;
+        else if (strcmp(command.name,"H") == 0) {
+          printf("Implement me!\n");
 	  return 0;
-	
-	 /* Child executing command */
-         err = execvp(command.name, command.argv);
-         if (err = -1) { return 1; }
+        }
+        else if (strcmp(command.name,"L") == 0) {
+          if ((pid = fork()) == 0) {
+	    execl("/bin/pwd", "pwd", (char *) NULL);
+          }
+          waitpid(pid, &status, 0);
+          printf("\n");
+          execl("/bin/ls", "ls", "-l", (char *) NULL);
+
+	  return 0;
+        }
+        else {
+        int error = execvp(command.name, command.argv);
+        if (error = -1)
+          return 1;
+        }
       }
       
       /* Wait for the child to terminate */
@@ -122,7 +127,6 @@ int main(int argc, char *argv[]) {
         waitpid(pid, &status, WNOHANG);
       else
 	waitpid(pid, &status, 0);
-
 
    }
 
@@ -204,16 +208,6 @@ void convertCommand(struct command_t* command) {
     command->name = (char *) malloc(sizeof("echo"));
     strcpy(command->name, "echo");
   }
-  else if (strcmp(command->name,"H") == 0) {
-    free(command->name);
-    command->name = (char *) malloc(sizeof(""));
-    strcpy(command->name, "");
-  }
-  else if (strcmp(command->name,"L") == 0) {
-    free(command->name);
-    command->name = (char *) malloc(sizeof("ls"));
-    strcpy(command->name, "ls");
-  }
   else if (strcmp(command->name,"M") == 0) {
     free(command->name);
     command->name = (char *) malloc(sizeof("nano"));
@@ -237,12 +231,15 @@ void convertCommand(struct command_t* command) {
     command->name = (char *) malloc(sizeof("clear"));
     strcpy(command->name, "clear");
   }
-  else if (strcmp(command->name,"X") == 0) {
-    free(command->name);
-    command->name = (char *) malloc(sizeof(command->argv[1]));
-    strcpy(command->name, command->argv[1]);
+  else if (strcmp(command->name,"X") == 0) { 
+    if (command->argc == 2) {
+      free(command->name);
+      command->name = (char *) malloc(sizeof(command->argv[1]));
+      strcpy(command->name, command->argv[1]);
+    }
+    
+    return;
   }
-
 
   return;
 
