@@ -85,6 +85,7 @@ int main(int argc, char *argv[]) {
       //...
       convertCommand(&command);
       	/* Create a child process to execute the command */
+
         {
           if (*(command.name + (strlen(command.name) - 1)) == '&') {
             int size = strlen(command.name) - 1;
@@ -237,14 +238,17 @@ void convertCommand(struct command_t* command) {
     strcpy(command->name, "clear");
   }
   else if (strcmp(command->name,"X") == 0) { 
-    if (command->argc == 2) {
-      free(command->name);
-      command->name = (char *) malloc(sizeof(command->argv[1]));
-      strcpy(command->name, command->argv[1]);
-    }
+    if (command->argc >= 2) {
+      int index;
+      free(command->name);  
+      command->name = command->argv[1];
+      for(index = 1; index < command->argc - 1; ++index)
+        command->argv[index] = command->argv[index + 1];
     
-    return;
+      command->argv[index] = NULL;
+    }
   }
+
 
   return;
 
