@@ -41,6 +41,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <errno.h>
 
 
 #define MAX_ARGS	64
@@ -78,28 +79,25 @@ int main(int argc, char *argv[]) {
       printPrompt();
       /* Read the command line and parse it */
       readCommand(cmdLine);
-      //...
       parseCommand(cmdLine, &command);
-      //...
       command.argv[command.argc] = NULL;
-      //...
+      /* Convert custom commands into standards */
       convertCommand(&command);
-      	/* Create a child process to execute the command */
-
-        {
-          if (*(command.name + (strlen(command.name) - 1)) == '&') {
-            int size = strlen(command.name) - 1;
-            char* new_command;
-            new_command = (char *) malloc(size);
-            strncpy(new_command,command.name,size);
-            free(command.name);
-            command.name = new_command;
-            bg = 1;
-          }
-	  else
-	    bg = 0;
-        }
-
+      /* check if process should be ran in the background 
+	 and convert accordingly */
+      if (*(command.name + (strlen(command.name) - 1)) == '&') {
+        int size = strlen(command.name) - 1;
+        char* new_command;
+        new_command = (char *) malloc(size);
+        strncpy(new_command,command.name,size);
+        free(command.name);
+        command.name = new_command;
+        bg = 1;
+      }
+      else
+        bg = 0;
+      
+      /* fork the process */
       if ((pid = fork()) == 0) {
 
         if(strcmp(command.name,"") == 0)
@@ -122,13 +120,16 @@ int main(int argc, char *argv[]) {
 	  return 0;
         }
         else {
-        int error = execvp(command.name, command.argv);
-        if (error = -1)
+        int status = execvp(command.name, command.argv);
+        if (status = -1)
+	  printf("ERROR: %s\n", strerror(errno));
           return 1;
         }
       }
       
-      /* Wait for the child to terminate */
+      /* Wait for the child to terminate 
+	 if it is meant to be a background 
+ 	 process, do not wait */
       if (bg)
         waitpid(pid, &status, WNOHANG);
       else
