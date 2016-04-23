@@ -121,7 +121,7 @@ int main(int argc, char *argv[]) {
         }
         else {
         int status = execvp(command.name, command.argv);
-        if (status = -1)
+        if (status == -1)
 	  printf("ERROR: %s\n", strerror(errno));
           return 1;
         }
