@@ -40,6 +40,6 @@ Two functions were added to the original file given.
 
 ### Resources
 Linux Programmer's Manual
-	- WAIT(2)
-	- EXEC(3)
-	- ERRNO(3)
+- WAIT(2)
+- EXEC(3)
+- ERRNO(3)
