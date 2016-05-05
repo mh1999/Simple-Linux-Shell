@@ -1,4 +1,4 @@
-# Operating Systems - Project 4A
+# A Simple Linux Shell
 
 Run the following command to compile and run the shell...
 
@@ -28,6 +28,7 @@ listed below...
 - W               - Clear screen
 - X *program*     - Execute *program*
 
+ An & at the end of a command will cause it to run in the background.
 
 ### Functions
 Two functions were added to the original file given.
